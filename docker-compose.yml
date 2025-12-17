@@ -1,0 +1,27 @@
+version: '1.0'
+
+services:
+  backend:
+    build: ./whiteboard-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - CORS_ORIGIN=http://localhost:8080,http://frontend:8080
+    networks:
+      - app-network
+
+  frontend:
+    build: ./whiteboard-frontend
+    ports:
+      - "8080:8080"
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
