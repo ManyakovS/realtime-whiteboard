@@ -1,0 +1,25 @@
+FROM node:25-alpine
+
+WORKDIR /app
+
+# Устанавливаем зависимости
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+# Копируем конфиги
+COPY vite.config.ts tsconfig.* ./
+COPY index.html ./
+
+# Копируем исходникиdo
+COPY src ./src
+COPY public ./public
+
+EXPOSE 5173
+
+# Ключевые настройки для hot reload
+ENV VITE_WATCH_USE_POLLING=true \
+    VITE_POLLING_INTERVAL=1000 \
+    NODE_ENV=development
+
+# Запуск с подробным логированием
+CMD ["yarn", "dev", "--host", "--port", "5173", "--force"]

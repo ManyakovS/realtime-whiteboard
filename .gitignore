@@ -24,7 +24,7 @@ dist-ssr
 *.sw?
 
 # Docker
-Dockerfile.local       
-docker-compose.override.yml 
+Dockerfile.dev       
+docker-compose.dev.yml 
 docker-compose.*.yml    
 *.dockerfile

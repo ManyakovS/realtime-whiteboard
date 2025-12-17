@@ -1,0 +1,15 @@
+{
+  "name": "realtime-whiteboard",
+  "version": "1.0.0",
+  "repository": "https://github.com/ManyakovS/realtime-whiteboard.git",
+  "author": "Маняков Степан <stepanmanyakov@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev:up": "docker-compose -f docker-compose.dev.yml up",
+    "dev:down": "docker-compose -f docker-compose.dev.yml down",
+    "prod:up": "docker-compose up",
+    "prod:down": "docker-compose down",
+    "dev:backend": "docker-compose -f docker-compose.dev.yml up backend",
+    "dev:frontend": "docker-compose -f docker-compose.dev.yml up frontend"
+  }
+}

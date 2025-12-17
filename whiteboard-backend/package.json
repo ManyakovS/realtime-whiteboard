@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "node --watch src/app.ts",
+    "dev": "ts-node-dev --respawn --transpile-only --poll src/app.ts",
     "start": "ts-node src/app.ts",
     "build": "tsc"
   },
@@ -15,6 +15,7 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6"
+    "@types/express": "^5.0.6",
+    "ts-node-dev": "^2.0.0"
   }
 }

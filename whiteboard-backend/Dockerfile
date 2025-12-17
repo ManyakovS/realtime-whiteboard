@@ -1,28 +1,27 @@
 # Базовый образ с зависимостями
-FROM node:18-alpine AS deps
-WORKDIR /app
+FROM node:25-alpine AS deps
+WORKDIR /
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
 # Builder стадия
 FROM node:25-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+WORKDIR /
+COPY --from=deps //node_modules ./node_modules
 COPY . .
 # Собираем TypeScript
 RUN yarn tsc
 
 # Production стадия
 FROM node:25-alpine AS runner
-WORKDIR /app
+WORKDIR /
 
 ENV NODE_ENV=production
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001
 
-# Копируем собранный JavaScript из src/app.ts
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /dist ./dist
 COPY package.json ./
 
 RUN yarn install --production --frozen-lockfile
