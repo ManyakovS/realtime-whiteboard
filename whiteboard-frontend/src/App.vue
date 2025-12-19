@@ -2,13 +2,8 @@
 
 <template>
   <v-layout class="rounded rounded-md border">
-    <v-app-bar title="123"></v-app-bar>
+    <AppHeader></AppHeader>
 
-    <v-navigation-drawer>
-      <v-list nav>
-        <v-list-item title="Navigation drawer" link></v-list-item>
-      </v-list>
-    </v-navigation-drawer>
 
     <v-main class="d-flex align-center justify-center" height="300">
       <v-container>
