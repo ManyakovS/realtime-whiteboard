@@ -1,4 +1,6 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 // Vuetify
 import { createVuetify } from 'vuetify'
@@ -20,6 +22,10 @@ const vuetify = createVuetify({
   },
 })
 
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+
 createApp(App)
     .use(vuetify)
+    .use(pinia)
     .mount('#app')
