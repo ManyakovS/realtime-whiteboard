@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev:up": "docker-compose -f docker-compose.dev.yml up",
+    "dev:up:build": "docker-compose -f docker-compose.dev.yml up --build",
     "dev:down": "docker-compose -f docker-compose.dev.yml down",
     "prod:up": "docker-compose up",
     "prod:down": "docker-compose down",

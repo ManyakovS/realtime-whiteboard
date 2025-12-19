@@ -14,7 +14,7 @@ COPY index.html ./
 COPY src ./src
 COPY public ./public
 
-EXPOSE 5173
+EXPOSE 8080
 
 # Ключевые настройки для hot reload
 ENV VITE_WATCH_USE_POLLING=true \

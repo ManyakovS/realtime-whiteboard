@@ -8,7 +8,7 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 docker build -t frontend-dev -f Dockerfile.dev .
 
 # Запустить dev
-docker run -p 5173:5173 `
+docker run -p 8080:5173 `
 >>   -v ${PWD}:/app `
 >>   -v /app/node_modules `
 >>   -e CHOKIDAR_USEPOLLING=true `

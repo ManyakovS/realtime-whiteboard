@@ -1,0 +1,35 @@
+version: '1.0'
+
+services:
+  backend:
+    build:
+      context: ./whiteboard-backend
+      dockerfile: Dockerfile.dev
+    container_name: whiteboard-backend-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./whiteboard-backend/src:/src
+      - ./whiteboard-backend/tsconfig.json:/tsconfig.json
+      - /node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    command: npx ts-node-dev --respawn --transpile-only --poll src/app.ts
+
+  frontend:
+    build:
+      context: ./whiteboard-frontend
+      dockerfile: Dockerfile.dev
+    container_name: whiteboard-frontend-dev
+    ports:
+      - "5173:5173"
+    volumes: 
+    - ./whiteboard-frontend/src:/app/src
+    - ./whiteboard-frontend/public:/app/public
+    environment:
+      - VITE_API_URL=http://localhost:3000
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+    command: yarn dev --host

@@ -1,5 +1,25 @@
 import { createApp } from 'vue'
-import './style.css'
+
+// Vuetify
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+
+import 'vuetify/dist/vuetify.min.css'
+import '@mdi/font/css/materialdesignicons.css'
+
+// Components
 import App from './App.vue'
 
-createApp(App).mount('#app')
+// Vuetify
+const vuetify = createVuetify({
+  components,
+  directives,
+  theme: {
+    defaultTheme: 'light',
+  },
+})
+
+createApp(App)
+    .use(vuetify)
+    .mount('#app')
