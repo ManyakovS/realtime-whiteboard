@@ -108,6 +108,7 @@
                 variant="text"
                 size="x-small"
                 color="grey-lighten-1"
+                :disabled="layer.locked"
                 @click.stop="deleteLayer(layer.id)"
               ></v-btn>
             </div>
@@ -268,6 +269,12 @@ const saveLayer = () => {
 
 const deleteLayer = (id: number) => {
   if (store.layers.length <= 1) return;
+  
+  const layer = store.layers.find(l => l.id === id);
+  if (layer?.locked) {
+    return;
+  }
+
 
   const index = store.layers.findIndex((l) => l.id === id);
   if (index !== -1) {

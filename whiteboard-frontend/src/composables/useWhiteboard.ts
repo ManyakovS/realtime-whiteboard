@@ -62,6 +62,12 @@ export function useWhiteboard() {
   const startImageData = ref<ImageData | null>(null); // Для предпросмотра фигур
 
   const handleStart = (event: MouseEvent | TouchEvent) => {
+    const currentLayer = store.layers.find(l => l.id === store.activeLayerId);
+
+    if (!currentLayer || !currentLayer.visible || currentLayer.locked) {
+      return;
+    }
+
     if (!store.mainCtx || !store.mainCanvas) return;
     isDrawing.value = true;
 
@@ -79,9 +85,15 @@ export function useWhiteboard() {
 
     store.mainCtx.beginPath();
     store.mainCtx.moveTo(x, y);
-    store.mainCtx.strokeStyle =
-      store.currentTool === "eraser" ? "#FFFFFF" : store.strokeColor;
-    store.mainCtx.lineWidth = store.strokeWidth;
+    
+    if (store.currentTool === 'eraser') {
+      store.mainCtx.globalCompositeOperation = 'destination-out';
+      store.mainCtx.lineWidth = store.strokeWidth;
+    } else {
+      store.mainCtx.globalCompositeOperation = 'source-over';
+      store.mainCtx.strokeStyle = store.strokeColor;
+      store.mainCtx.lineWidth = store.strokeWidth;
+  }
   };
 
   const handleMove = (event: MouseEvent | TouchEvent) => {
@@ -121,6 +133,9 @@ export function useWhiteboard() {
     if (!isDrawing.value) return;
     isDrawing.value = false;
     mainCtx.value?.closePath();
+
+    mainCtx.value.globalCompositeOperation = 'source-over';
+
     store.historyApi?.saveState();
     updateStatus();
   };
