@@ -24,11 +24,9 @@ export const useWhiteboardStore = defineStore('whiteboard', () => {
 
   // Слои
   const layers = ref<Layer[]>([
-    { id: 1, name: 'Верхний слой', visible: true, locked: false },
-    { id: 2, name: 'Эскиз', visible: true, locked: false },
-    { id: 3, name: 'Фон', visible: true, locked: false },
+    { id: 0, name: 'Первый слой', visible: true, locked: false },
   ]);
-  const activeLayerId = ref(1);
+  const activeLayerId = ref(0);
 
   // Ссылки на контексты (будут установлены при инициализации)
   const mainCtx = shallowRef<CanvasRenderingContext2D | null>(null);

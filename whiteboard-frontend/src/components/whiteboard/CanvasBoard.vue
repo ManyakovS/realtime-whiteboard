@@ -13,16 +13,20 @@
 
       <canvas
         ref="canvasRef"
+        v-for="layer in store.layers"
+        :key="layer.id"
+        :id="'layer-' + layer.id"
         :width="store.WORLD_SIZE"
         :height="store.WORLD_SIZE"
+        :class="['layer-canvas', { 'active-layer': store.activeLayerId === layer.id }]"
+        :style="{ 
+          zIndex: layer.id, 
+          visibility: layer.visible ? 'visible' : 'hidden',
+          pointerEvents: store.activeLayerId === layer.id ? 'auto' : 'none' 
+        }"
         @mousedown="handleStart"
         @mousemove="handleMove"
         @mouseup="handleEnd"
-        @mouseleave="handleEnd"
-        @touchstart.prevent="handleStart"
-        @touchmove.prevent="handleMove"
-        @touchend.prevent="handleEnd"
-        class="main-canvas"
       ></canvas>
     </div>
   </div>
@@ -41,7 +45,7 @@ const { initCanvas, handleStart, handleMove, handleEnd } = useWhiteboard();
 
 onMounted(() => {
   if (canvasRef.value) {
-    initCanvas(canvasRef.value);
+    initCanvas(canvasRef.value[0]);
     
     // Авто-скролл в центр при загрузке
     if (viewportRef.value) {
@@ -84,5 +88,20 @@ onMounted(() => {
 .viewport::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 5px;
+}
+
+.canvas-wrapper {
+  position: relative;
+  background-color: #f9f9f9;
+}
+.layer-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: transparent; /* Все слои кроме нижнего прозрачные */
+}
+/* Нижний слой может иметь белый фон */
+.layer-canvas:last-child {
+  background-color: white;
 }
 </style>

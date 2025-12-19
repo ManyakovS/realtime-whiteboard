@@ -6,6 +6,7 @@
 
     <v-main class="fill-height">
       <CanvasBoard/>
+      <Toolbar/>
     </v-main>
 
     <RightPanel/>
