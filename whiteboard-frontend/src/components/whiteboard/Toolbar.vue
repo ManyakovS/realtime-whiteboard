@@ -11,11 +11,7 @@
       variant="text"
       direction="vertical"
     >
-      <v-btn value="brush" icon="mdi-brush" title="Кисть"></v-btn>
-      <v-btn value="rect" icon="mdi-square-outline" title="Прямоугольник"></v-btn>
-      <v-btn value="circle" icon="mdi-circle-outline" title="Круг"></v-btn>
-      <v-btn value="arrow" icon="mdi-arrow-top-right" title="Стрелка"></v-btn>
-      <v-btn value="eraser" icon="mdi-eraser" title="Ластик"></v-btn>
+      <v-btn v-for="tool in tools" v-bind="tool"></v-btn>
     </v-btn-toggle>
 
     <v-divider class="my-2 border-opacity-25" width="80%"></v-divider>
@@ -28,8 +24,8 @@
           :disabled="store.currentTool === 'eraser'"
           class="color-dot-btn"
         >
-          <div 
-            class="color-preview" 
+          <div
+            class="color-preview"
             :style="{ backgroundColor: store.strokeColor }"
           ></div>
         </v-btn>
@@ -45,17 +41,16 @@
 
     <v-menu location="end" :close-on-content-click="false">
       <template v-slot:activator="{ props }">
-        <v-btn
-          v-bind="props"
-          icon
-          class="color-dot-btn"
-          title="Толщина"
-        >
-          <div 
-            class="color-preview" 
-            style="background-color: rgba(0,0,0, 0.87);" 
-            :style="{ width: `${0.96 * store.strokeWidth}px`, height: `${0.96 * store.strokeWidth}px` }"
-          ></div><!-- TODO: ЦВЕТОСХЕМА -->
+        <v-btn v-bind="props" icon class="color-dot-btn" title="Толщина">
+          <div
+            class="color-preview"
+            style="background-color: rgba(0, 0, 0, 0.87)"
+            :style="{
+              width: `${0.96 * store.strokeWidth}px`,
+              height: `${0.96 * store.strokeWidth}px`,
+            }"
+          ></div>
+          <!-- TODO: ЦВЕТОСХЕМА -->
         </v-btn>
       </template>
       <v-card width="200" class="pa-4">
@@ -74,11 +69,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useWhiteboardStore } from '@/stores/whiteboard-store';
+import { ref } from "vue";
+import { useWhiteboardStore } from "@/stores/whiteboard-store";
 
 const store = useWhiteboardStore();
 const colorMenu = ref(false);
+
+const tools = [
+  { value: "brush", icon: "mdi-brush", title: "Кисть" },
+  { value: "rect", icon: "mdi-square-outline", title: "Прямоугольник" },
+  { value: "circle", icon: "mdi-circle-outline", title: "Круг" },
+  /* {value : 'arrow', icon: 'mdi-arrow-top-right', title: 'Стрелка'}, */
+  { value: "eraser", icon: "mdi-eraser", title: "Ластик" },
+];
 </script>
 
 <style scoped>
@@ -102,7 +105,7 @@ const colorMenu = ref(false);
   height: 48px;
   border-radius: 50%;
   border: 2px solid #eee;
-  box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Стилизация активной кнопки в группе */

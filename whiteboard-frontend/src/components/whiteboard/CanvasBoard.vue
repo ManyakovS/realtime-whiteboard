@@ -4,12 +4,12 @@
       class="canvas-wrapper" 
       :style="{ width: store.WORLD_SIZE + 'px', height: store.WORLD_SIZE + 'px' }"
     >
-      <UserCursor 
+      <!-- <UserCursor 
         v-for="user in store.activeUsers" 
         :key="user.id" 
         :style="{ transform: `translate(${user.x}px, ${user.y}px)` }"
         :user="user" 
-      />
+      /> -->
 
       <canvas
         ref="canvasRef"
