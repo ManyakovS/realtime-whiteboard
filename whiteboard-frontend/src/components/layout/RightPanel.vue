@@ -8,26 +8,13 @@
   >
     <div class="pa-4 d-flex flex-column fill-height">
       <div class="text-subtitle-2 mb-2 text-grey-darken-1">Навигатор</div>
-      <v-card
-        variant="outlined"
-        class="minimap-container mb-6 overflow-hidden position-relative"
-        height="180"
-        @click="handleMinimapClick"
-      >
-        <canvas
-          ref="minimapCanvas"
-          width="280"
-          height="180"
-          class="minimap-preview"
-        ></canvas>
-        <div class="viewport-indicator" :style="indicatorStyle"></div>
-      </v-card>
+      <MiniMap/>
 
-      <div class="text-subtitle-2 mb-2">История</div>
+      <div class="text-subtitle-2 mb-2 mt-2">История</div>
       <div class="d-flex gap-2 mb-6">
         <v-btn
           icon="mdi-undo"
-          :disabled="!store.canUndo"
+          :disabled="!store.historyApi?.canUndo"
           variant="tonal"
           color="primary"
           @click="wb.undo"
@@ -35,7 +22,7 @@
         ></v-btn>
         <v-btn
           icon="mdi-redo"
-          :disabled="!store.canRedo"
+          :disabled="!store.historyApi?.canRedo"
           variant="tonal"
           color="primary"
           @click="wb.redo"
@@ -162,63 +149,6 @@ import { useWhiteboard } from "@/composables/useWhiteboard";
 const store = useWhiteboardStore();
 const wb = useWhiteboard();
 
-const minimapCanvas = ref<HTMLCanvasElement | null>(null);
-const scrollX = ref(0);
-const scrollY = ref(0);
-const viewportWidth = ref(window.innerWidth);
-const viewportHeight = ref(window.innerHeight);
-
-// Расчет рамки на мини-карте
-const indicatorStyle = computed(() => {
-  const minimapEl = minimapCanvas.value;
-  if (!minimapEl) return {};
-
-  const scale = minimapEl.offsetWidth / store.WORLD_SIZE;
-  return {
-    width: `${(viewportWidth.value - 280) * scale}px`, // вычитаем ширину панели
-    height: `${viewportHeight.value * scale}px`,
-    left: `${scrollX.value * scale}px`,
-    top: `${scrollY.value * scale}px`,
-  };
-});
-
-// Обновление мини-карты (рисуем основной холст в маленький)
-const updateMinimap = () => {
-  const miniCtx = minimapCanvas.value?.getContext("2d");
-  const mainCanvas = document.querySelector(
-    ".main-canvas"
-  ) as HTMLCanvasElement;
-
-  if (miniCtx && mainCanvas) {
-    miniCtx.clearRect(0, 0, 280, 180);
-    miniCtx.drawImage(
-      mainCanvas,
-      0,
-      0,
-      store.WORLD_SIZE,
-      store.WORLD_SIZE,
-      0,
-      0,
-      280,
-      180
-    );
-  }
-};
-
-// Клик по мини-карте для быстрого перемещения
-const handleMinimapClick = (e: MouseEvent) => {
-  const viewport = document.querySelector(".viewport");
-  if (!viewport || !minimapCanvas.value) return;
-
-  const rect = minimapCanvas.value.getBoundingClientRect();
-  const scale = store.WORLD_SIZE / rect.width;
-
-  viewport.scrollLeft =
-    (e.clientX - rect.left) * scale - viewportWidth.value / 2;
-  viewport.scrollTop =
-    (e.clientY - rect.top) * scale - viewportHeight.value / 2;
-};
-
 // Состояние диалога
 const layerDialog = reactive({
   show: false,
@@ -286,36 +216,9 @@ const deleteLayer = (id: number) => {
     }
   }
 };
-
-onMounted(() => {
-  const viewport = document.querySelector(".viewport");
-  viewport?.addEventListener("scroll", (e: any) => {
-    scrollX.value = e.target.scrollLeft;
-    scrollY.value = e.target.scrollTop;
-  });
-
-  // Обновляем мини-карту каждые 2 секунды (для производительности)
-  setInterval(updateMinimap, 2000);
-});
 </script>
 
 <style scoped>
-.minimap-container {
-  background-color: #fff;
-  cursor: pointer;
-}
-.minimap-preview {
-  width: 100%;
-  height: 100%;
-  opacity: 0.8;
-}
-.viewport-indicator {
-  position: absolute;
-  border: 1.5px solid #6366f1;
-  background-color: rgba(99, 102, 241, 0.05);
-  pointer-events: none;
-  transition: all 0.1s ease-out;
-}
 .gap-2 {
   gap: 8px;
 }

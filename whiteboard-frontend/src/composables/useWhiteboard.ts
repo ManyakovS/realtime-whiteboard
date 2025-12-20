@@ -41,20 +41,6 @@ export function useWhiteboard() {
     ctx.lineJoin = "round";
 
     history.saveState();
-    updateStatus();
-  };
-
-  const updateStatus = () => {
-    if (store.historyApi) {
-      store.canUndo = store.historyApi.canUndo?.value;
-      store.canRedo = store.historyApi.canRedo?.value;
-    }
-  };
-
-  const updateHistoryStatus = () => {
-    if (!history) return;
-    store.canUndo = history.canUndo?.value;
-    store.canRedo = history.canRedo?.value;
   };
 
   const startX = ref(0);
@@ -137,7 +123,6 @@ export function useWhiteboard() {
     mainCtx.value.globalCompositeOperation = 'source-over';
 
     store.historyApi?.saveState();
-    updateStatus();
   };
 
   const getCoordinates = (event: MouseEvent | TouchEvent) => {
@@ -153,11 +138,9 @@ export function useWhiteboard() {
 
   const undo = () => {
     store.historyApi?.undo();
-    updateStatus();
   };
   const redo = () => {
     store.historyApi?.redo();
-    updateStatus();
   };
   const clear = () => {
     if (!mainCtx.value || !mainCanvas.value) return;
@@ -169,7 +152,6 @@ export function useWhiteboard() {
       mainCanvas.value.height
     );
     store.historyApi?.saveState();
-    updateStatus();
   };
 
   return { initCanvas, handleStart, handleMove, handleEnd, undo, redo, clear };

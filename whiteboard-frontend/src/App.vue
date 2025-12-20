@@ -13,10 +13,6 @@
   </v-layout>
 </template>
 
-<script setup>
-;
-</script>
-
 <style>
   body, #app {
     height: 100vh;

@@ -49,5 +49,5 @@ export function useHistory(ctx: CanvasRenderingContext2D | null, canvas: HTMLCan
     };
   };
 
-  return { saveState, undo, redo, canUndo, canRedo };
+  return { saveState, undo, redo, canUndo, canRedo, history, currentIndex };
 }

@@ -14,10 +14,8 @@ export const useWhiteboardStore = defineStore('whiteboard', () => {
   const WORLD_SIZE = 4000;
   
   // Состояние инструментов
-  const historyApi = shallowRef<any>(null); 
+  const historyApi = ref<any>(null); 
 
-  const canUndo = ref(false);
-  const canRedo = ref(false);
   const strokeColor = ref('#6366F1');
   const strokeWidth = ref(5);
   const currentTool = ref('brush');
@@ -31,6 +29,7 @@ export const useWhiteboardStore = defineStore('whiteboard', () => {
   // Ссылки на контексты (будут установлены при инициализации)
   const mainCtx = shallowRef<CanvasRenderingContext2D | null>(null);
   const mainCanvas = shallowRef<HTMLCanvasElement | null>(null);
+  const viewPort = shallowRef<HTMLDivElement | null>(null);
 
   const setTool = (tool: ToolType) => (currentTool.value = tool);
   
@@ -41,11 +40,10 @@ export const useWhiteboardStore = defineStore('whiteboard', () => {
     strokeWidth,
     layers,
     activeLayerId,
-    canUndo,
-    canRedo,
     mainCtx,
     mainCanvas,
+    viewPort,
     historyApi,
-    setTool
+    setTool,
   };
 });
