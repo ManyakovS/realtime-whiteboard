@@ -1,12 +1,12 @@
 import { ref, reactive } from 'vue';
 import { useWhiteboardStore } from '@/stores/whiteboard-store';
 
-// Создаем состояние вне функции, чтобы оно было единым (Singleton)
 const state = reactive({
   scrollX: 0,
   scrollY: 0,
   viewWidth: 0,
   viewHeight: 0,
+  zoom: 1,
 });
 
 const viewportRef = ref<HTMLElement | null>(null);
@@ -32,6 +32,10 @@ export function useViewport() {
     state.viewHeight = viewportRef.value.clientHeight;
   };
 
+  const setZoom = (value: number) => {
+    state.zoom = Math.min(Math.max(value, 0.25), 3);
+  };
+
   const scrollTo = (x: number, y: number) => {
     if (!viewportRef.value) return;
     viewportRef.value.scrollLeft = x - state.viewWidth / 2;
@@ -39,8 +43,8 @@ export function useViewport() {
   };
 
   const getIndicatorStyle = (minimapWidth: number, minimapHeight: number) => {
-    const scaleX = minimapWidth / store.WORLD_SIZE;
-    const scaleY = minimapHeight / store.WORLD_SIZE;
+    const scaleX = minimapWidth / (store.WORLD_SIZE * state.zoom);
+    const scaleY = minimapHeight / (store.WORLD_SIZE * state.zoom);
 
     return {
       width: `${state.viewWidth * scaleX}px`,
@@ -59,40 +63,30 @@ export function useViewport() {
     viewportRef.value.scrollTop = targetY;
   };
 
-  /**
-   * Метод для навигации через мини-карту
-   * @param e - MouseEvent из мини-карты
-   * @param minimapEl - Элемент мини-карты (холст или контейнер)
-   */
   const handleMinimapAction = (e: MouseEvent, minimapEl: HTMLElement | null) => {
     if (!minimapEl || !viewportRef.value) return;
 
-    // 1. Получаем физические размеры мини-карты в DOM
     const rect = minimapEl.getBoundingClientRect();
     
-    // 2. Рассчитываем масштаб (World / DOM)
-    // Используем ширину, так как пропорции холста и миникарты обычно совпадают
-    const scale = store.WORLD_SIZE / rect.width;
+    const scale = (store.WORLD_SIZE * state.zoom) / rect.width;
 
-    // 3. Вычисляем координаты клика относительно мини-карты
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
 
-    // 4. Переводим в мировые координаты
     const worldX = clickX * scale;
     const worldY = clickY * scale;
 
-    // 5. Выполняем перемещение
     scrollTo(worldX, worldY);
   };
 
   return {
-    ...reactive(state),
+    state,
     viewportRef,
     initViewport,
     scrollTo,
     getIndicatorStyle,
     handleMinimapAction,
     centerViewport,
+    setZoom,
   };
 }

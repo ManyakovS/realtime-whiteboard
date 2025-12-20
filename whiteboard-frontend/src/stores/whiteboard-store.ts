@@ -17,7 +17,7 @@ export const useWhiteboardStore = defineStore('whiteboard', () => {
   const historyApi = ref<any>(null); 
 
   const strokeColor = ref('#6366F1');
-  const strokeWidth = ref(5);
+  const strokeWidth = ref(10);
   const currentTool = ref('brush');
 
   // Слои
