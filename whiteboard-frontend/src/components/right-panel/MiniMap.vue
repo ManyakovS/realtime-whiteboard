@@ -1,19 +1,26 @@
 <template>
-  <div class="mini-map">
+  <v-card
+    variant="outlined"
+    class="mini-map"
+  >
     <canvas
       ref="miniMapCanvasRef"
       class="mini-map-canvas"
       :width="MINI_MAP_SIZE"
       :height="MINI_MAP_SIZE"
+      @mousedown="startNavigation"
     />
-  </div>
+    <MinimapViewportIndicator :width="MINI_MAP_SIZE" :height="MINI_MAP_SIZE" />
+  </v-card>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { useWhiteboardStore } from "@/stores/whiteboard-store";
+import { useViewport } from '@/composables/useViewport';
 
 const store = useWhiteboardStore();
+const { handleMinimapAction } = useViewport();
 
 // Константы
 const MINI_MAP_SIZE = 250;
@@ -49,6 +56,23 @@ const renderMiniMap = async () => {
   }
 };
 
+const startNavigation = (e: MouseEvent) => {
+  const el = miniMapCanvasRef.value;
+  handleMinimapAction(e, el);
+
+  const onMove = (moveEvent: MouseEvent) => {
+    handleMinimapAction(moveEvent, el);
+  };
+
+  const onStop = () => {
+    window.removeEventListener('mousemove', onMove);
+    window.removeEventListener('mouseup', onStop);
+  };
+
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onStop);
+};
+
 watch(
   () => [
     store.historyApi?.currentIndex,
@@ -73,5 +97,6 @@ onMounted(() => {
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   background: #f5f5f5;
+  cursor: grab;
 }
 </style>
