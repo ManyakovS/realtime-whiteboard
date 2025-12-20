@@ -17,6 +17,9 @@ export function useViewport() {
   const initViewport = (el: HTMLElement) => {
     viewportRef.value = el;
     update();
+
+    centerViewport();
+
     el.addEventListener('scroll', update);
     window.addEventListener('resize', update);
   };
@@ -44,6 +47,16 @@ export function useViewport() {
       height: `${state.viewHeight * scaleY}px`,
       transform: `translate(${state.scrollX * scaleX}px, ${state.scrollY * scaleY}px)`,
     };
+  };
+
+  const centerViewport = () => {
+    if (!viewportRef.value) return;
+
+    const targetX = (store.WORLD_SIZE - state.viewWidth) / 2;
+    const targetY = (store.WORLD_SIZE - state.viewHeight) / 2;
+
+    viewportRef.value.scrollLeft = targetX;
+    viewportRef.value.scrollTop = targetY;
   };
 
   /**
@@ -80,5 +93,6 @@ export function useViewport() {
     scrollTo,
     getIndicatorStyle,
     handleMinimapAction,
+    centerViewport,
   };
 }
