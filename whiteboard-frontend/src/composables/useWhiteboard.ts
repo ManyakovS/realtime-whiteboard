@@ -1,6 +1,5 @@
 import { ref, watch } from "vue";
 import { useWhiteboardStore } from "@/stores/whiteboard-store";
-import { useHistory } from "./useHistory";
 import { storeToRefs } from "pinia";
 
 export function useWhiteboard() {
@@ -14,7 +13,6 @@ export function useWhiteboard() {
     if (canvasEl) {
       const newCtx = canvasEl.getContext('2d', { willReadFrequently: true });
       if (newCtx) {
-        // Переносим настройки кисти на новый контекст
         newCtx.lineCap = 'round';
         newCtx.lineJoin = 'round';
         store.mainCtx = newCtx;
@@ -34,13 +32,10 @@ export function useWhiteboard() {
     mainCanvas.value = el;
     mainCtx.value = ctx;
 
-    const history = useHistory(ctx, canvas);
-    store.historyApi = history;
-
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
 
-    history.saveState();
+    store.recordHistory()
   };
 
   const startX = ref(0);
@@ -122,7 +117,7 @@ export function useWhiteboard() {
 
     mainCtx.value.globalCompositeOperation = 'source-over';
 
-    store.historyApi?.saveState();
+    store.recordHistory()
   };
 
   const getCoordinates = (event: MouseEvent | TouchEvent) => {
@@ -136,12 +131,6 @@ export function useWhiteboard() {
     };
   };
 
-  const undo = () => {
-    store.historyApi?.undo();
-  };
-  const redo = () => {
-    store.historyApi?.redo();
-  };
   const clear = () => {
     if (!mainCtx.value || !mainCanvas.value) return;
 
@@ -151,8 +140,8 @@ export function useWhiteboard() {
       mainCanvas.value.width,
       mainCanvas.value.height
     );
-    store.historyApi?.saveState();
+    store.recordHistory()
   };
 
-  return { initCanvas, handleStart, handleMove, handleEnd, undo, redo, clear };
+  return { initCanvas, handleStart, handleMove, handleEnd, clear };
 }

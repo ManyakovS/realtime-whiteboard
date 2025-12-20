@@ -77,10 +77,15 @@ const startNavigation = (e: MouseEvent) => {
 const changeZoom = (delta: number) => {
   setZoom(state.zoom + delta);
 };
+watch(
+  () => 
+    store.historyManager,
+  () => console.log(store.historyManager)
+);
 
 watch(
   () => [
-    store.historyApi?.currentIndex,
+    store.historyManager?.currentIndex,
     store.layers.map((layer) => layer.visible),
   ],
   () => setTimeout(renderMiniMap, 200)

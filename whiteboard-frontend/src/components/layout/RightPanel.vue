@@ -6,16 +6,16 @@
 
       <div class="text-subtitle-2 mb-2 mt-2">История</div>
       <div class="d-flex gap-2 mb-6">
-        <v-btn icon="mdi-undo" :disabled="!store.historyApi?.canUndo" variant="tonal" color="primary" @click="wb.undo"
+        <v-btn icon="mdi-undo" :disabled="!store.canUndo" variant="tonal" color="primary" @click="store.undo"
           class="flex-grow-1"></v-btn>
-        <v-btn icon="mdi-redo" :disabled="!store.historyApi?.canRedo" variant="tonal" color="primary" @click="wb.redo"
+        <v-btn icon="mdi-redo" :disabled="!store.canRedo" variant="tonal" color="primary" @click="store.redo"
           class="flex-grow-1"></v-btn>
       </div>
 
       <v-divider class="mb-4"></v-divider>
       <layers />
 
-      <v-btn prepend-icon="mdi-delete-sweep-outline" variant="text" color="error" block @click="wb.clear">
+      <v-btn prepend-icon="mdi-delete-sweep-outline" variant="text" color="error" block @click="store.clearAllLayers">
         Очистить доску
       </v-btn>
     </div>
@@ -24,10 +24,8 @@
 
 <script setup lang="ts">
 import { useWhiteboardStore } from "@/stores/whiteboard-store";
-import { useWhiteboard } from "@/composables/useWhiteboard";
 
 const store = useWhiteboardStore();
-const wb = useWhiteboard();
 </script>
 
 <style scoped>
