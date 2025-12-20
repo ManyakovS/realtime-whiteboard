@@ -3,8 +3,9 @@
     <div class="canvas-wrapper" :style="{
       width: store.WORLD_SIZE + 'px',
       height: store.WORLD_SIZE + 'px',
-      transform: `scale(${state.zoom})`,
-      transformOrigin: '0 0',
+      '--zoom': state.zoom,
+      transform: 'scale(var(--zoom))',
+      transformOrigin: '0 0'
     }">
       <canvas ref="canvasRef" v-for="layer in store.layers" :key="layer.id" :id="'layer-' + layer.id"
         :width="store.WORLD_SIZE" :height="store.WORLD_SIZE" :class="[

@@ -28,5 +28,9 @@ onMounted(() => {
   overflow: auto;
   cursor: crosshair;
   background-color: rgba(66, 66, 66, 0.016);
+
+  will-change: transform, scroll-position;
+  backface-visibility: hidden;
+  perspective: 1000;
 }
 </style>

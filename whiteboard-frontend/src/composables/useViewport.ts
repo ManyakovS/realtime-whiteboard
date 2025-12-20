@@ -1,5 +1,5 @@
-import { ref, reactive } from 'vue';
-import { useWhiteboardStore } from '@/stores/whiteboard-store';
+import { ref, reactive } from "vue";
+import { useWhiteboardStore } from "@/stores/whiteboard-store";
 
 const state = reactive({
   scrollX: 0,
@@ -20,8 +20,8 @@ export function useViewport() {
 
     centerViewport();
 
-    el.addEventListener('scroll', update);
-    window.addEventListener('resize', update);
+    el.addEventListener("scroll", update);
+    window.addEventListener("resize", update);
   };
 
   const update = () => {
@@ -32,8 +32,23 @@ export function useViewport() {
     state.viewHeight = viewportRef.value.clientHeight;
   };
 
-  const setZoom = (value: number) => {
-    state.zoom = Math.min(Math.max(value, 0.25), 3);
+  const setZoom = (newZoom: number) => {
+    if (!viewportRef.value) return;
+
+    const oldZoom = state.zoom;
+    const clampedZoom = Math.min(Math.max(newZoom, 0.25), 3);
+
+    if (oldZoom === clampedZoom) return;
+
+    const centerX =
+      (viewportRef.value.scrollLeft + state.viewWidth / 2) / oldZoom;
+    const centerY =
+      (viewportRef.value.scrollTop + state.viewHeight / 2) / oldZoom;
+
+    state.zoom = clampedZoom;
+
+    viewportRef.value.scrollLeft = centerX * clampedZoom - state.viewWidth / 2;
+    viewportRef.value.scrollTop = centerY * clampedZoom - state.viewHeight / 2;
   };
 
   const scrollTo = (x: number, y: number) => {
@@ -49,7 +64,9 @@ export function useViewport() {
     return {
       width: `${state.viewWidth * scaleX}px`,
       height: `${state.viewHeight * scaleY}px`,
-      transform: `translate(${state.scrollX * scaleX}px, ${state.scrollY * scaleY}px)`,
+      transform: `translate(${state.scrollX * scaleX}px, ${
+        state.scrollY * scaleY
+      }px)`,
     };
   };
 
@@ -63,11 +80,14 @@ export function useViewport() {
     viewportRef.value.scrollTop = targetY;
   };
 
-  const handleMinimapAction = (e: MouseEvent, minimapEl: HTMLElement | null) => {
+  const handleMinimapAction = (
+    e: MouseEvent,
+    minimapEl: HTMLElement | null
+  ) => {
     if (!minimapEl || !viewportRef.value) return;
 
     const rect = minimapEl.getBoundingClientRect();
-    
+
     const scale = (store.WORLD_SIZE * state.zoom) / rect.width;
 
     const clickX = e.clientX - rect.left;
