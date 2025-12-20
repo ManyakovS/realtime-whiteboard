@@ -15,7 +15,7 @@ services:
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
-    command: npx ts-node-dev --respawn --transpile-only --poll src/app.ts
+    command: npx ts-node-dev --respawn --transpile-only --poll src/server.ts
 
   frontend:
     build:
